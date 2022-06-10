@@ -75,6 +75,7 @@ if PDB_dataset_web_server.shape[0] != PDB_dataset.shape[0]:
 check = PDB_dataset_web_server[["WILD_TYPE", 'CHAIN', 'POSITION', 'MUTANT']] == PDB_dataset[["WILD_TYPE", 'CHAIN', 'POSITION', 'MUTANT']]
 for index, row in check.iterrows():
     if False in row.values:
+        print("В этом ряду есть какая-то проблема - входные данные в веб инструмент не совпадают из изначальным датасетом")
         print(index)
         print(row)
     
