@@ -77,7 +77,7 @@ def get_pharm_diff_Pmapper(row):
     mutant = seq3(row['MUTANT']).upper()
     return list(pharmacophore_Pmapper[mutant] - pharmacophore_Pmapper[wild])
 
-# Загружаем наш датасет с посчитанными CSM после get_CSM.py
+# Загружаем наш датасет с посчитанными CSM после create_CSM.py
 PDB_dataset = pd.read_csv("/path/to/dataset_with_CSM.csv")
 
 # Считаем фармакофоры двумя способами
