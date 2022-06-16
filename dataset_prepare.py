@@ -1,15 +1,13 @@
-#!/usr/bin/env python
-# coding: utf-8
-
 # Цель данного блока - получить набор pdb-структур из датасета (в фомате .csv). Также мы переводим изначальный датасет в общий формат (единые столбцы).
 
 import csv
 import os
 import pandas as pd
 import numpy as np
-from Bio.PDB import PDBParser - для выделения нужной цепи и нужной модели
-from Bio.PDB import PDBIO - для сохранения результата
-from pdbtools import pdb_fetch - для скачивания PDB
+from Bio.PDB import PDBParser # для выделения нужной цепи и нужной модели
+from Bio.PDB import PDBIO # для сохранения результата
+from Bio.PDB import Select # для выбора только нужной цепи
+from pdbtools import pdb_fetch # для скачивания PDB
 
 # Загружаем датасет из CSV в pd.DataFrame 
 
@@ -44,15 +42,19 @@ for PDB_id in PDB_unique:
 
 PDB_id_chain_unique = PDB_dataset.PDB_id_chain.unique()
 
+                                                               
+# Делаем класс для удаления гетероатомов и всего, кроме белка (ВРОДЕ ТАК, НАДО ЭТО УТОЧНИТЬ)  
+                                                               
+class NonHetSelect(Select):
+    def accept_residue(self, residue):
+        return 1 if residue.id[0] == " " else 0                         
+                                                               
 # Обрабатываем, сохраняя только первую модель и нужную цепь.
 
 parser = PDBParser()
 io = PDBIO()
 for PDB_id_chain in PDB_id_chain_unique:    
     structure = parser.get_structure(PDB_id_chain[0:4], "/path/to/folder/"+PDB_id_chain[0:4] + '.pdb')
-    for model in structure:
-        if model.id == 0: #выбраем первую модель
-            for chain in model:
-                if chain.id == PDB_id_chain[4]: #выбираем нужную цепь (для этого и объединяли PDBid и chain)
-                    io.set_structure(chain)
-                    io.save("/path/to/folder/"+PDB_id_chain[0:5]+"_model_1.pdb")
+    chain = structure[0][PDB_id_chain[4]] # берем первую модель и нужную цепь
+    io.set_structure(chain)
+    io.save("/path/to/folder/"+PDB_id_chain[0:5]+"_model_1.pdb", NonHetSelect())
