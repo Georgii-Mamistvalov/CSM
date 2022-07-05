@@ -31,7 +31,7 @@ PDB_dataset = PDB_dataset.groupby(['PDB', 'CHAIN', 'WILD_TYPE', 'POSITION', 'MUT
 
 # Create extra column PDB_CHAIN, will need it later
 
-PDB_dataset["PDB_CHAIN"] = PDB_dataset["PDB"] + PDB_dataset["CHAIN']
+PDB_dataset["PDB_CHAIN"] = PDB_dataset["PDB"] + PDB_dataset["CHAIN"]
 
 # Get unique PDB_id from dataset 
 
